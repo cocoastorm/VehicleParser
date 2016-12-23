@@ -1,6 +1,7 @@
 # specific to this project
 csv/*
 !csv/examples
+sql/*
 
 
 # Created by https://www.gitignore.io/api/python,windows,macos,linux
