@@ -8,36 +8,52 @@ import vehicles
 # Display a title bar.
 def display_title():
     print("**********************************************")
-    print("*** VehiclesParser - CSV - Objects - MySQL ***")
+    print("*************** Vehicles Parser **************")
     print("**********************************************")
 
+# Display the main options
 def display_options():
-    print("\n1) List available csv files to parse")
-    print("2) Add csv file to parse")
-    print("3) Convert current data to MySQL")
+    print("1) Add CSV file(s) to Parse")
+    print("2) Convert Current Data to MySQL")
     print("\n\nType 'quit' to exit this application\n")
 
+# List the files in a specified directory (path)
 def list_directory(path):
     for (dirpath, _, filenames) in os.walk(path):
         for filename in filenames:
             yield filename
 
-def list_csv_files():
-    path = './csv'
-    files = list_directory(path)
+# Get the current CSV Files
+def csv_files():
+    files = list_directory('.' + os.sep + 'csv')
+    return files
+
+def display_csv_files(files):
+    if len(files) <= 0:
+        print("No CSV Files found")
+    else:
+        print("CSV Files Found: \n")
     
-    print("**********************************************")
-    print("***************** CSV Files ******************")
-    print("**********************************************")
-    
-    for file in files:
-        print(file)
+        for idx, file in enumerate(files):
+            print('%d. %s' % (idx, file))
 
 def parse_csv_file(parser_obj):
-    file = input("Enter the name of the csv file you wish to parse (all): ")
+    ffs = list(csv_files)
+
+    # Display CSV Files
+    display_csv_files(ffs)
     
-    if file.lower() != 'all':
-        parser_obj.read(file)
+    input_file = input("Enter the CSV filename or number you wish to parse (ALL): ")
+    
+    if is_number(input_file):
+        try:
+            file = ffs[int(input_file)]
+            parser_obj.read(file)
+        except IndexError:
+            input_file = ''
+
+    elif input_file.lower() != '' and not is_number(input_file):
+        parser_obj.read(input_file)
     else:
         for file in list_directory('.' + os.sep + 'csv'):
             parser_obj.read(file)
@@ -93,13 +109,21 @@ def convert_data_mysql(parser_obj):
     else:
         con.generate_sql_for('all')
 
+def is_number(num):
+    try:
+        float(num)
+        return True
+    except ValueError:
+        return False
+
 # Global Variables
 csv_path = './csv'
 choice = ''
 
 csv_parser = bettercsv.Parser(csv_path)
+csv_files = csv_files()
 
-# display header title
+# Display Title
 display_title()
 
 # Main Loop
@@ -108,10 +132,9 @@ while choice != 'quit':
     choice = input("Your Option: ")
     choice = choice.lower()
     os.system('clear')
-
+    
+    # GOTO Option
     if choice == '1':
-        list_csv_files()
-    elif choice == '2':
         parse_csv_file(csv_parser)
-    elif choice == '3':
+    elif choice == '2':
         convert_data_mysql(csv_parser)
