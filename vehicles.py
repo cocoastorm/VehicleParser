@@ -2,7 +2,18 @@ import os
 
 def generate_sql(tablename, filename, items):
     dir_path = 'sql' + os.sep
-    file = open(dir_path + filename + '.sql', 'w')
+    
+    try:
+        file = open(dir_path + filename + '.sql', 'w')
+    except PermissionError:
+        print("access denied in creating file!")
+        file.close()
+        return False
+    except IOError:
+        print("could not create file!")
+        file.close()
+        return False
+    
     for idx, item in enumerate(items):
         sql = list()
         keys = ['`%s`' % k for k in item.keys()]
@@ -22,7 +33,19 @@ def generate_sql(tablename, filename, items):
 
 def generate_sql_relationship(tablename, filename, items):
     dir_path = 'sql' + os.sep
-    file = open(dir_path + filename + '.sql', 'w')
+    
+    try:
+        file = open(dir_path + filename + '.sql', 'w')
+
+    except PermissionError:
+        print("access denied in creating file!")
+        file.close()
+        return False
+
+    except IOError:
+        print("could not create file!")
+        file.close()
+        return False
 
     for idx, item in enumerate(items):
         sql = list()

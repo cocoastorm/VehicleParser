@@ -17,21 +17,46 @@ class Parser(object):
         self.engine_ecus = []
 
     def validate_csv(self, file_path):
-        reader = csv.reader(open(file_path))
+        try:
+            file = open(file_path)
+        except PermissionError:
+            print("access denied in creating file!")
+            file.close()
+            return False
+        except IOError:
+            print("could not read file!")
+            file.close()
+            return False
+        
+        reader = csv.reader(file)
+        
         for row in reader:
             if len(row) != 8:
+                file.close()
                 return False
+        file.close()
         return True
 
     def read_csv(self, file_path):
         valid = self.validate_csv(file_path)
         
         if valid:
-            file = open(file_path)
+            try:
+                file = open(file_path)
+            except PermissionError:
+                print("access denied in creating file!")
+                file.close()
+                return False
+            except IOError:
+                print("could not read file!")
+                file.close()
+                return False
+            
             reader = csv.reader(file)
 
             for row in reader:
                 self.raw_csv.append(row)
+            file.close()
         else:
             self.unparsed_files.append(file_path)
 
