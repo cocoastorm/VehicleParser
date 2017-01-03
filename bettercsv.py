@@ -13,8 +13,8 @@ class Parser(object):
         self.ecus = []
 
         # related data
-        self.vehicle_engine = []
-        self.engine_ecu = []
+        self.vehicle_engines = []
+        self.engine_ecus = []
 
     def validate_csv(self, file_path):
         reader = csv.reader(open(file_path))
@@ -72,8 +72,8 @@ class Parser(object):
             engine = self.add_engine(engine, fuel)
             ecu = self.add_ecu(ecu, ecu_model, ecu_version)
             
-            self.vehicle_engine.append([vehicle, engine])
-            self.engine_ecu.append([engine, ecu])
+            self.vehicle_engines.append([vehicle, engine])
+            self.engine_ecus.append([engine, ecu])
 
     def read(self, file):
         file_path = self.path + os.sep + file

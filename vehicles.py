@@ -1,15 +1,36 @@
 import os
 
-def generate_sql(tablename, items, filename):
+def generate_sql(tablename, filename, items):
     dir_path = 'sql' + os.sep
     file = open(dir_path + filename + '.sql', 'w')
     for idx, item in enumerate(items):
         sql = list()
         keys = ['`%s`' % k for k in item.keys()]
         values = ['\'%s\'' % v for v in item.values()]
-        primary_index = str(idx + 1) + ', '
+        primary_index = str(idx + 1) + ', ' 
 
         sql.append("INSERT INTO `%s` (" % tablename)
+        sql.append(", ".join(keys))
+        sql.append(") VALUES (")
+        sql.append(primary_index)
+        sql.append(", ".join(values))
+        sql.append(");")
+
+        file.write("".join(sql))
+        file.write("\n")
+    file.close()
+
+def generate_sql_vehicle_engine(items):
+    dir_path = 'sql' + os.sep
+    file = open(dir_path + 'VehicleEngine.sql', 'w')
+
+    for idx, item in enumerate(items):
+        sql = list()
+        keys = ['vehicle_id', 'engine_id']
+        values = ['%s' % str(v + 1) for v in item.values()]
+        primary_index = str(idx + 1) + ', ' 
+
+        sql.append("INSERT INTO `VehicleEngine` (")
         sql.append(", ".join(keys))
         sql.append(") VALUES (")
         sql.append(primary_index)
@@ -27,9 +48,15 @@ class MySqlConverter():
         self.e_cols = ['engine', 'fuel']
         self.ecu_cols = ['model', 'version']
 
+        self.ve_cols = ['vehicle_id', 'engine_id']
+        self.ee_cols = ['engine_id', 'ecu_id']
+
         self.vehicles = []
         self.engines = []
         self.ecus = []
+        
+        self.vehicle_engines = []
+        self.engine_ecus = []
 
     def parse_item(self, item, cols):
         item_dict = {}
@@ -51,15 +78,24 @@ class MySqlConverter():
     def add_ecus(self, ecus):
         for ecu in ecus:
             self.engines.append(self.parse_item(ecu, self.ecu_cols))
+
+    def add_vehicle_engines(self, vehicle_engines):
+        for vehicle_engine in vehicle_engines:
+            self.vehicle_engines.append(self.parse_item(vehicle_engine, self.ve_cols))
+
+    def add_engine_ecus(self, engine_ecus):
+        for engine_ecu in engine_ecus:
+            self.engine_ecus.append(self.parse_item(engine_ecu, self.ee_cols))
     
     def generate_sql_for(self, name):
         if name != 'all':
             items = getattr(self, name)
-            generate_sql(name, items, name)
+            generate_sql(name, name, items)
         else:
-            generate_sql('vehicles', self.vehicles, 'vehicles')
-            generate_sql('engines', self.engines, 'engines')
-            generate_sql('ecu', self.engines, 'ecus')
+            generate_sql('vehicles', 'vehicles', self.vehicles)
+            generate_sql('engines', 'engines', self.engines)
+            generate_sql('ecu', 'ecus', self.engines)
+            generate_sql_vehicle_engine(self.vehicle_engines)
 
     def print_results(self):
         print("** Vehicles **")

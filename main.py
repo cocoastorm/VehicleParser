@@ -94,6 +94,8 @@ def convert_data_mysql(parser_obj):
     con.add_vehicles(parser_obj.vehicles)
     con.add_engines(parser_obj.engines)
     con.add_ecus(parser_obj.ecus)
+    con.add_vehicle_engines(parser_obj.vehicle_engines)
+    con.add_engine_ecus(parser_obj.engine_ecus)
 
     con.print_results()
 
