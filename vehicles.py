@@ -77,7 +77,7 @@ class MySqlConverter():
 
     def add_ecus(self, ecus):
         for ecu in ecus:
-            self.engines.append(self.parse_item(ecu, self.ecu_cols))
+            self.ecus.append(self.parse_item(ecu, self.ecu_cols))
 
     def add_vehicle_engines(self, vehicle_engines):
         for vehicle_engine in vehicle_engines:
@@ -94,7 +94,7 @@ class MySqlConverter():
         else:
             generate_sql('vehicles', 'vehicles', self.vehicles)
             generate_sql('engines', 'engines', self.engines)
-            generate_sql('ecu', 'ecus', self.engines)
+            generate_sql('ecu', 'ecus', self.ecus)
             generate_sql_relationship('VehicleEngine', 'VehicleEngine', self.vehicle_engines)
             generate_sql_relationship('EngineEcu', 'EngineEcu', self.engine_ecus)
 
