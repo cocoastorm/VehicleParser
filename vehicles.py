@@ -3,14 +3,16 @@ import os
 def generate_sql(tablename, items, filename):
     dir_path = 'sql' + os.sep
     file = open(dir_path + filename + '.sql', 'w')
-    for item in items:
+    for idx, item in enumerate(items):
         sql = list()
         keys = ['`%s`' % k for k in item.keys()]
         values = ['\'%s\'' % v for v in item.values()]
+        primary_index = str(idx + 1) + ', '
 
         sql.append("INSERT INTO `%s` (" % tablename)
         sql.append(", ".join(keys))
         sql.append(") VALUES (")
+        sql.append(primary_index)
         sql.append(", ".join(values))
         sql.append(");")
 

@@ -1,7 +1,7 @@
 # standard library
 import os
 
-# my own ghetto
+# my own ghetto modules
 import bettercsv
 import vehicles
 
