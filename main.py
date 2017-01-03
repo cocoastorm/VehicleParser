@@ -86,7 +86,9 @@ def print_convert_mysql_options():
     print("\n1) Vehicles")
     print("2) Engines")
     print("3) ECUs")
-    print("4) ALL")
+    print("4) VehicleEngine")
+    print("5) EngineEcu")
+    print("6) ALL")
     print("\n\n")
 
 def convert_data_mysql(parser_obj):
@@ -108,6 +110,10 @@ def convert_data_mysql(parser_obj):
         con.generate_sql_for('engines')
     elif dump_option == 3:
         con.generate_sql_for('ecus')
+    elif dump_option == 4:
+        con.generate_sql_vehicle_engine()
+    elif dump_option == 5:
+        con.generate_sql_engine_ecu()
     else:
         con.generate_sql_for('all')
 

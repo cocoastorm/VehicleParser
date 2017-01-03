@@ -20,17 +20,17 @@ def generate_sql(tablename, filename, items):
         file.write("\n")
     file.close()
 
-def generate_sql_vehicle_engine(items):
+def generate_sql_relationship(tablename, filename, items):
     dir_path = 'sql' + os.sep
-    file = open(dir_path + 'VehicleEngine.sql', 'w')
+    file = open(dir_path + filename + '.sql', 'w')
 
     for idx, item in enumerate(items):
         sql = list()
-        keys = ['vehicle_id', 'engine_id']
+        keys = ['`%s`' % k for k in item.keys()]
         values = ['%s' % str(v + 1) for v in item.values()]
         primary_index = str(idx + 1) + ', ' 
 
-        sql.append("INSERT INTO `VehicleEngine` (")
+        sql.append("INSERT INTO `%s` (" % tablename)
         sql.append(", ".join(keys))
         sql.append(") VALUES (")
         sql.append(primary_index)
@@ -95,7 +95,14 @@ class MySqlConverter():
             generate_sql('vehicles', 'vehicles', self.vehicles)
             generate_sql('engines', 'engines', self.engines)
             generate_sql('ecu', 'ecus', self.engines)
-            generate_sql_vehicle_engine(self.vehicle_engines)
+            generate_sql_relationship('VehicleEngine', 'VehicleEngine', self.vehicle_engines)
+            generate_sql_relationship('EngineEcu', 'EngineEcu', self.engine_ecus)
+
+    def generate_sql_vehicle_engine(self):
+        generate_sql_relationship('VehicleEngine', 'VehicleEngine', self.vehicle_engines)
+
+    def generate_sql_engine_ecu(self):
+        generate_sql_relationship('EngineEcu', 'EngineEcu', self.engine_ecus)
 
     def print_results(self):
         print("** Vehicles **")
