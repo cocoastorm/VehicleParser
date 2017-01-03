@@ -7,11 +7,9 @@ def generate_sql(tablename, filename, items):
         file = open(dir_path + filename + '.sql', 'w')
     except PermissionError:
         print("access denied in creating file!")
-        file.close()
         return False
     except IOError:
         print("could not create file!")
-        file.close()
         return False
     
     for idx, item in enumerate(items):
@@ -39,18 +37,16 @@ def generate_sql_relationship(tablename, filename, items):
 
     except PermissionError:
         print("access denied in creating file!")
-        file.close()
         return False
 
     except IOError:
         print("could not create file!")
-        file.close()
         return False
 
     for idx, item in enumerate(items):
         sql = list()
         keys = ['`%s`' % k for k in item.keys()]
-        values = ['%s' % str(v + 1) for v in item.values()]
+        values = ['%s' % str(v + 1) if v is not None else '' for v in item.values()]
         primary_index = str(idx + 1) + ', ' 
 
         sql.append("INSERT INTO `%s` (" % tablename)

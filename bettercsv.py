@@ -21,11 +21,9 @@ class Parser(object):
             file = open(file_path)
         except PermissionError:
             print("access denied in creating file!")
-            file.close()
             return False
         except IOError:
             print("could not read file!")
-            file.close()
             return False
         
         reader = csv.reader(file)
@@ -45,11 +43,9 @@ class Parser(object):
                 file = open(file_path)
             except PermissionError:
                 print("access denied in creating file!")
-                file.close()
                 return False
             except IOError:
                 print("could not read file!")
-                file.close()
                 return False
             
             reader = csv.reader(file)
