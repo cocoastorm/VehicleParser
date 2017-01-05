@@ -46,9 +46,9 @@ class MySqlConverter():
             items = getattr(self, name)
             generate_sql(name, name, items)
         else:
-            generate_sql('vehicles', 'vehicles', self.vehicles)
-            generate_sql('engines', 'engines', self.engines)
-            generate_sql('ecu', 'ecus', self.ecus)
+            generate_sql('vehicles', 'Vehicles', self.vehicles)
+            generate_sql('engines', 'Engines', self.engines)
+            generate_sql('ecu', 'ECUs', self.ecus)
             generate_sql_relationship('VehicleEngine', 'VehicleEngine', self.vehicle_engines)
             generate_sql_relationship('EngineEcu', 'EngineEcu', self.engine_ecus)
 
@@ -102,7 +102,7 @@ def generate_sql(tablename, filename, items):
         values = ['\'%s\'' % v for v in item.values()]
         primary_index = str(idx + 1) + ', ' 
 
-        sql.append("INSERT INTO `%s` (" % tablename)
+        sql.append("INSERT INTO `%s` (`id`, " % tablename)
         sql.append(", ".join(keys))
         sql.append(") VALUES (")
         sql.append(primary_index)
@@ -133,7 +133,7 @@ def generate_sql_relationship(tablename, filename, items):
         values = ['%s' % str(v + 1) if v is not None else '' for v in item.values()]
         primary_index = str(idx + 1) + ', ' 
 
-        sql.append("INSERT INTO `%s` (" % tablename)
+        sql.append("INSERT INTO `%s` (`id`, " % tablename)
         sql.append(", ".join(keys))
         sql.append(") VALUES (")
         sql.append(primary_index)
