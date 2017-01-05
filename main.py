@@ -75,6 +75,16 @@ def parse_csv_file(parser_obj):
         print(ecu)
     print("\n")
 
+    print("** Vehicle Engines **")
+    for vehicle_engine in csv_parser.vehicle_engines:
+        print(vehicle_engine)
+    print("\n")
+
+    print("** Engine ECUs **")
+    for engine_ecu in csv_parser.engine_ecus:
+        print(engine_ecu)
+    print("\n")
+
     # invalid csv files
     if len(parser_obj.unparsed_files) > 0:
         print("** Unparsed CSV Files **")

@@ -74,6 +74,16 @@ class MySqlConverter():
             print(ecu)
         print("\n")
 
+        print("** Vehicle Engines **")
+        for vehicle_engine in self.vehicle_engines:
+            print(vehicle_engine)
+        print("\n")
+
+        print("** Engine ECUs **")
+        for engine_ecu in self.engine_ecus:
+            print(engine_ecu)
+        print("\n")
+
 def generate_sql(tablename, filename, items):
     dir_path = 'sql' + os.sep
     
@@ -145,6 +155,7 @@ class bettermongo():
         self.engine_ecus = []
 
         self.read_config()
+        self.create_mongo()
 
     def read_config(self):
         config = configparser.ConfigParser()
@@ -156,6 +167,10 @@ class bettermongo():
             self.mongodb = config['mongo']['Database']
             return True
         return False
+
+    def create_mongo(self):
+        self.mongoclient = pymongo.MongoClient(self.mongohost, self.mongoport)
+        self.db = self.mongoclient[self.mongodb]
 
     def add_vehicles(self, vehicles):
         self.vehicles = vehicles
@@ -171,3 +186,4 @@ class bettermongo():
 
     def add_engine_ecus(self, engine_ecus):
         self.engine_ecus = engine_ecus
+
