@@ -162,13 +162,17 @@ class bettermongo():
         config.read('config.ini')
 
         if config['Mongo']:
-            self.mongohost = config['Mongo']['Host']
-            self.mongoport = int(config['Mongo']['Port'])
-            self.mongodb = config['Mongo']['Database']
+            self.mongo_host = config['Mongo']['Host']
+            self.mongo_port = config['Mongo']['Port']
+            self.mongo_db = config['Mongo']['Database']
+            self.mongo_username = config['Mongo']['Username']
+            self.mongo_password = config['Mongo']['Password']
 
     def create_mongo(self):
-        self.mongoclient = pymongo.MongoClient(self.mongohost, self.mongoport)
-        self.db = self.mongoclient[self.mongodb]
+        connection_string = 'mongodb://' + self.mongo_username + ':' + self.mongo_password + '@' + self.mongo_host + ':' + self.mongo_port + '/' + self.mongo_db
+
+        self.mongoclient = pymongo.MongoClient(connection_string)
+        self.db = self.mongoclient[self.mongo_db]
 
     def add_vehicles(self, vehicles):
         self.vehicles = vehicles

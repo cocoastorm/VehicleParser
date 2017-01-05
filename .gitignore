@@ -2,6 +2,7 @@
 csv/*
 !csv/examples
 sql/*
+config.ini
 
 
 # Created by https://www.gitignore.io/api/python,windows,macos,linux
