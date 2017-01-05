@@ -1,65 +1,8 @@
 import os
+import pymongo
+import configparser
 
-def generate_sql(tablename, filename, items):
-    dir_path = 'sql' + os.sep
-    
-    try:
-        file = open(dir_path + filename + '.sql', 'w')
-    except PermissionError:
-        print("access denied in creating file!")
-        return False
-    except IOError:
-        print("could not create file!")
-        return False
-    
-    for idx, item in enumerate(items):
-        sql = list()
-        keys = ['`%s`' % k for k in item.keys()]
-        values = ['\'%s\'' % v for v in item.values()]
-        primary_index = str(idx + 1) + ', ' 
-
-        sql.append("INSERT INTO `%s` (" % tablename)
-        sql.append(", ".join(keys))
-        sql.append(") VALUES (")
-        sql.append(primary_index)
-        sql.append(", ".join(values))
-        sql.append(");")
-
-        file.write("".join(sql))
-        file.write("\n")
-    file.close()
-
-def generate_sql_relationship(tablename, filename, items):
-    dir_path = 'sql' + os.sep
-    
-    try:
-        file = open(dir_path + filename + '.sql', 'w')
-
-    except PermissionError:
-        print("access denied in creating file!")
-        return False
-
-    except IOError:
-        print("could not create file!")
-        return False
-
-    for idx, item in enumerate(items):
-        sql = list()
-        keys = ['`%s`' % k for k in item.keys()]
-        values = ['%s' % str(v + 1) if v is not None else '' for v in item.values()]
-        primary_index = str(idx + 1) + ', ' 
-
-        sql.append("INSERT INTO `%s` (" % tablename)
-        sql.append(", ".join(keys))
-        sql.append(") VALUES (")
-        sql.append(primary_index)
-        sql.append(", ".join(values))
-        sql.append(");")
-
-        file.write("".join(sql))
-        file.write("\n")
-    file.close()
-
+# Convert Dictionaries to MySQL
 class MySqlConverter():
     def __init__(self):
         self.ve_cols = ['vehicle_id', 'engine_id']
@@ -130,3 +73,101 @@ class MySqlConverter():
         for ecu in self.ecus:
             print(ecu)
         print("\n")
+
+def generate_sql(tablename, filename, items):
+    dir_path = 'sql' + os.sep
+    
+    try:
+        file = open(dir_path + filename + '.sql', 'w')
+    except PermissionError:
+        print("access denied in creating file!")
+        return False
+    except IOError:
+        print("could not create file!")
+        return False
+    
+    for idx, item in enumerate(items):
+        sql = list()
+        keys = ['`%s`' % k for k in item.keys()]
+        values = ['\'%s\'' % v for v in item.values()]
+        primary_index = str(idx + 1) + ', ' 
+
+        sql.append("INSERT INTO `%s` (" % tablename)
+        sql.append(", ".join(keys))
+        sql.append(") VALUES (")
+        sql.append(primary_index)
+        sql.append(", ".join(values))
+        sql.append(");")
+
+        file.write("".join(sql))
+        file.write("\n")
+    file.close()
+
+def generate_sql_relationship(tablename, filename, items):
+    dir_path = 'sql' + os.sep
+    
+    try:
+        file = open(dir_path + filename + '.sql', 'w')
+
+    except PermissionError:
+        print("access denied in creating file!")
+        return False
+
+    except IOError:
+        print("could not create file!")
+        return False
+
+    for idx, item in enumerate(items):
+        sql = list()
+        keys = ['`%s`' % k for k in item.keys()]
+        values = ['%s' % str(v + 1) if v is not None else '' for v in item.values()]
+        primary_index = str(idx + 1) + ', ' 
+
+        sql.append("INSERT INTO `%s` (" % tablename)
+        sql.append(", ".join(keys))
+        sql.append(") VALUES (")
+        sql.append(primary_index)
+        sql.append(", ".join(values))
+        sql.append(");")
+
+        file.write("".join(sql))
+        file.write("\n")
+    file.close()
+
+# Transfer Data to MongoDB
+class bettermongo():
+    def __init__(self):
+        self.vehicles = []
+        self.engines = []
+        self.ecus = []
+        
+        self.vehicle_engines = []
+        self.engine_ecus = []
+
+        self.read_config()
+
+    def read_config(self):
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+
+        if config['mongo']:
+            self.mongohost = config['mongo']['Host']
+            self.mongoport = config['mongo']['Port']
+            self.mongodb = config['mongo']['Database']
+            return True
+        return False
+
+    def add_vehicles(self, vehicles):
+        self.vehicles = vehicles
+
+    def add_engines(self, engines):
+        self.engines = engines
+
+    def add_ecus(self, ecus):
+        self.ecus = ecus
+
+    def add_vehicle_engines(self, vehicle_engines):
+        self.vehicle_engines = vehicle_engines
+
+    def add_engine_ecus(self, engine_ecus):
+        self.engine_ecus = engine_ecus

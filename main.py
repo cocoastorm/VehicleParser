@@ -119,12 +119,12 @@ def convert_data_mysql(parser_obj):
         con.generate_sql_for('all')
 
 def add_data_mongodb(parser_obj):
-    vehicles = parser_obj.vehicles
-    engines = parser_obj.engines
-    ecus = parser_obj.engines
-
-    vehicle_engines = parser_obj.vehicle_engines
-    engine_ecus = parser_obj.engine_ecus
+    mo = vehicles.bettermongo()
+    mo.add_vehicles(parser_obj.vehicles)
+    mo.add_engines(parser_obj.engines)
+    mo.add_ecus(parser_obj.ecus)
+    mo.add_vehicle_engines(parser_obj.vehicle_engines)
+    mo.add_engine_ecus(parser_obj.engine_ecus)
 
 def is_number(num):
     try:
