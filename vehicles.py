@@ -194,26 +194,48 @@ class bettermongo():
             print(item)
             print("\n")
 
-    def reformat(self):
+    def condense(self):
         vehicles = list()
 
         for vehicle_idx, engine_idx in self.vehicle_engines:
-            vehicle = self.vehicles[int(vehicle_idx)]
-            engine = self.engines[int(engine_idx)]
+            vehicle = self.find_vehicle(vehicle_idx, vehicles)
+
+            if vehicle is None:
+                v = {'v_idx': vehicle_idx, 'e_idx': list()}
+                v['e_idx'].append(engine_idx)
+                vehicles.append(v)
+            else:
+                vehicle['e_idx'].append(engine_idx)
+
+        return vehicles
+
+    def find_vehicle(self, v_id, vehicles):
+        for vehicle in vehicles:
+            if vehicle['v_idx'] == v_id:
+                return vehicle
+        return None
+
+    def reformat(self, condensed_v):
+        vehicles = list()
+
+        for d in condensed_v:
+            vehicle = self.vehicles[int(d['v_idx'])]
+            vehicle['engines'] = list()
+
+            for e in d['e_idx']:
+                engine = self.engines[int(e)]
+
+                if engine not in vehicle['engines']:
+                    vehicle['engines'].append(engine)
 
             if vehicle not in vehicles:
-                vehicle['engines'] = list()
-                vehicle['engines'].append(engine)
                 vehicles.append(vehicle)
-            else:
-                vehicle = vehicles[vehicles.index(vehicle)]
-                vehicle['engines'].append(engine)
         
         self.print_items(vehicles)
         return vehicles
 
     def add_mongo(self):
-        vehicles = self.reformat()
+        vehicles = self.condense()
+        vehicles = self.reformat(vehicles)
         result = self.db.vehicles.insert_many(vehicles)
 
-        print(result)
