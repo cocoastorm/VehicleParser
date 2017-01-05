@@ -15,6 +15,7 @@ def display_title():
 def display_options():
     print("1) Add CSV file(s) to Parse")
     print("2) Convert Current Data to MySQL")
+    print("3) Add Current Data to MongoDB")
     print("\n\nType 'quit' to exit this application\n")
 
 # List the files in a specified directory (path)
@@ -117,6 +118,14 @@ def convert_data_mysql(parser_obj):
     else:
         con.generate_sql_for('all')
 
+def add_data_mongodb(parser_obj):
+    vehicles = parser_obj.vehicles
+    engines = parser_obj.engines
+    ecus = parser_obj.engines
+
+    vehicle_engines = parser_obj.vehicle_engines
+    engine_ecus = parser_obj.engine_ecus
+
 def is_number(num):
     try:
         float(num)
@@ -146,3 +155,5 @@ while choice != 'quit':
         parse_csv_file(csv_parser)
     elif choice == '2':
         convert_data_mysql(csv_parser)
+    elif choice == 3:
+        add_data_mongodb(csv_parser)

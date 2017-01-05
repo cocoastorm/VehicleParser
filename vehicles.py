@@ -62,14 +62,9 @@ def generate_sql_relationship(tablename, filename, items):
 
 class MySqlConverter():
     def __init__(self):
-        # constants (maybe)
-        self.v_cols = ['brand', 'model', 'year']
-        self.e_cols = ['engine', 'fuel']
-        self.ecu_cols = ['model', 'version']
-
         self.ve_cols = ['vehicle_id', 'engine_id']
         self.ee_cols = ['engine_id', 'ecu_id']
-
+        
         self.vehicles = []
         self.engines = []
         self.ecus = []
@@ -87,16 +82,13 @@ class MySqlConverter():
         return item_dict
 
     def add_vehicles(self, vehicles):
-        for vehicle in vehicles: 
-            self.vehicles.append(self.parse_item(vehicle, self.v_cols))
+        self.vehicles = vehicles
 
     def add_engines(self, engines):
-        for engine in engines:
-            self.engines.append(self.parse_item(engine, self.e_cols))
+        self.engines = engines
 
     def add_ecus(self, ecus):
-        for ecu in ecus:
-            self.ecus.append(self.parse_item(ecu, self.ecu_cols))
+        self.ecus = ecus
 
     def add_vehicle_engines(self, vehicle_engines):
         for vehicle_engine in vehicle_engines:

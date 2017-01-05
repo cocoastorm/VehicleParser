@@ -64,7 +64,7 @@ class Parser(object):
         if year == '':
             year = None
 
-        vehicle = [brand, model, year]
+        vehicle = {'brand': brand, 'model': model, 'year': year}
 
         if vehicle not in self.vehicles:
             self.vehicles.append(vehicle)
@@ -72,7 +72,7 @@ class Parser(object):
         return self.vehicles.index(vehicle)
 
     def add_engine(self, engine, fuel):
-        engine = [engine, fuel]
+        engine = {'engine': engine, 'fuel': fuel}
         if engine not in self.engines:
             self.engines.append(engine)
         
@@ -80,7 +80,7 @@ class Parser(object):
 
     def add_ecu(self, ecu_type, model, version):
         if ecu_type == 'ECU':
-            ecu = [model, version]
+            ecu = {'model': model, 'version': version}
             if ecu not in self.ecus:
                 self.ecus.append(ecu)
             
