@@ -136,6 +136,8 @@ def add_data_mongodb(parser_obj):
     mo.add_vehicle_engines(parser_obj.vehicle_engines)
     mo.add_engine_ecus(parser_obj.engine_ecus)
 
+    mo.add_mongo()
+
 def is_number(num):
     try:
         float(num)
@@ -165,5 +167,5 @@ while choice != 'quit':
         parse_csv_file(csv_parser)
     elif choice == '2':
         convert_data_mysql(csv_parser)
-    elif choice == 3:
+    elif choice == '3':
         add_data_mongodb(csv_parser)
