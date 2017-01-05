@@ -59,32 +59,6 @@ def parse_csv_file(parser_obj):
         for file in list_directory('.' + os.sep + 'csv'):
             parser_obj.read(file)
 
-    # print out results for now
-    print("** Vehicles **")
-    for vehicle in csv_parser.vehicles:
-        print(vehicle)
-    print("\n")
-    
-    print("** Engines **")
-    for engine in csv_parser.engines:
-        print(engine)
-    print("\n")
-
-    print("** ECUs **")
-    for ecu in csv_parser.ecus:
-        print(ecu)
-    print("\n")
-
-    print("** Vehicle Engines **")
-    for vehicle_engine in csv_parser.vehicle_engines:
-        print(vehicle_engine)
-    print("\n")
-
-    print("** Engine ECUs **")
-    for engine_ecu in csv_parser.engine_ecus:
-        print(engine_ecu)
-    print("\n")
-
     # invalid csv files
     if len(parser_obj.unparsed_files) > 0:
         print("** Unparsed CSV Files **")
@@ -109,8 +83,6 @@ def convert_data_mysql(parser_obj):
     con.add_ecus(parser_obj.ecus)
     con.add_vehicle_engines(parser_obj.vehicle_engines)
     con.add_engine_ecus(parser_obj.engine_ecus)
-
-    con.print_results()
 
     print_convert_mysql_options()
     dump_option = input("Your Option: ")

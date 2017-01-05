@@ -15,15 +15,6 @@ class MySqlConverter():
         self.vehicle_engines = []
         self.engine_ecus = []
 
-    def parse_item(self, item, cols):
-        item_dict = {}
-
-        # assuming same index in cols and item
-        for idx, col in enumerate(cols):
-            item_dict[col] = item[idx]
-
-        return item_dict
-
     def add_vehicles(self, vehicles):
         self.vehicles = vehicles
 
@@ -34,12 +25,10 @@ class MySqlConverter():
         self.ecus = ecus
 
     def add_vehicle_engines(self, vehicle_engines):
-        for vehicle_engine in vehicle_engines:
-            self.vehicle_engines.append(self.parse_item(vehicle_engine, self.ve_cols))
+        self.vehicle_engines = vehicle_engines
 
     def add_engine_ecus(self, engine_ecus):
-        for engine_ecu in engine_ecus:
-            self.engine_ecus.append(self.parse_item(engine_ecu, self.ee_cols))
+        self.engine_ecus = engine_ecus
     
     def generate_sql_for(self, name):
         if name != 'all':
@@ -57,32 +46,6 @@ class MySqlConverter():
 
     def generate_sql_engine_ecu(self):
         generate_sql_relationship('EngineEcu', 'EngineEcu', self.engine_ecus)
-
-    def print_results(self):
-        print("** Vehicles **")
-        for vehicle in self.vehicles:
-            print(vehicle)
-        print("\n")
-
-        print("** Engines **")
-        for engine in self.engines:
-            print(engine)
-        print("\n")
-
-        print("** ECUs **")
-        for ecu in self.ecus:
-            print(ecu)
-        print("\n")
-
-        print("** Vehicle Engines **")
-        for vehicle_engine in self.vehicle_engines:
-            print(vehicle_engine)
-        print("\n")
-
-        print("** Engine ECUs **")
-        for engine_ecu in self.engine_ecus:
-            print(engine_ecu)
-        print("\n")
 
 def generate_sql(tablename, filename, items):
     dir_path = 'sql' + os.sep
@@ -115,7 +78,7 @@ def generate_sql(tablename, filename, items):
 
 def generate_sql_relationship(tablename, filename, items):
     dir_path = 'sql' + os.sep
-    
+
     try:
         file = open(dir_path + filename + '.sql', 'w')
 
@@ -130,6 +93,7 @@ def generate_sql_relationship(tablename, filename, items):
     for idx, item in enumerate(items):
         sql = list()
         keys = ['`%s`' % k for k in item.keys()]
+        print(keys)
         values = ['%s' % str(v + 1) if v is not None else '' for v in item.values()]
         primary_index = str(idx + 1) + ', ' 
 
@@ -197,15 +161,15 @@ class bettermongo():
     def condense(self):
         vehicles = list()
 
-        for vehicle_idx, engine_idx in self.vehicle_engines:
-            vehicle = self.find_vehicle(vehicle_idx, vehicles)
+        for ve in self.vehicle_engines:
+            vehicle = self.find_vehicle(ve['vehicle_id'], vehicles)
 
             if vehicle is None:
-                v = {'v_idx': vehicle_idx, 'e_idx': list()}
-                v['e_idx'].append(engine_idx)
+                v = {'v_idx': ve['vehicle_id'], 'e_idx': list()}
+                v['e_idx'].append(ve['engine_id'])
                 vehicles.append(v)
             else:
-                vehicle['e_idx'].append(engine_idx)
+                vehicle['e_idx'].append(ve['engine_id'])
 
         return vehicles
 
@@ -237,5 +201,5 @@ class bettermongo():
     def add_mongo(self):
         vehicles = self.condense()
         vehicles = self.reformat(vehicles)
-        result = self.db.vehicles.insert_many(vehicles)
+        # result = self.db.vehicles.insert_many(vehicles)
 

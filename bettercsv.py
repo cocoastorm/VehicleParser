@@ -93,8 +93,11 @@ class Parser(object):
             engine = self.add_engine(engine, fuel)
             ecu = self.add_ecu(ecu, ecu_model, ecu_version)
             
-            self.vehicle_engines.append([vehicle, engine])
-            self.engine_ecus.append([engine, ecu])
+            ve = {'vehicle_id': vehicle, 'engine_id': engine}
+            ee = {'engine_id': engine, 'ecu_id': ecu}
+            
+            self.vehicle_engines.append(ve)
+            self.engine_ecus.append(ee)
 
     def read(self, file):
         file_path = self.path + os.sep + file
