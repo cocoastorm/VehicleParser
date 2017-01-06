@@ -110,13 +110,18 @@ def generate_sql_relationship(tablename, filename, items):
 
 # Transfer Data to MongoDB
 class bettermongo():
-    def __init__(self):
-        self.vehicles = []
-        self.engines = []
-        self.ecus = []
-        
-        self.vehicle_engines = []
-        self.engine_ecus = []
+    def __init__(self, vehicles, engines, ecus, vehicle_engines, engine_ecus):
+        self.parsed_vehicles = vehicles
+        self.vehicles = list()
+
+        self.parsed_engines = engines
+        self.engines = list()
+
+        self.parsed_ecus = ecus
+        self.ecus = ecus
+
+        self.parsed_vehicle_engines = vehicle_engines
+        self.parsed_engine_ecus = engine_ecus
 
         self.read_config()
         self.create_mongo()
@@ -138,68 +143,41 @@ class bettermongo():
         self.mongoclient = pymongo.MongoClient(connection_string)
         self.db = self.mongoclient[self.mongo_db]
 
-    def add_vehicles(self, vehicles):
-        self.vehicles = vehicles
+    def unify_engines_ecus(self):
+        for engine in self.parsed_engines:
+            engine['ecus'] = list()
+            self.engines.append(engine)
 
-    def add_engines(self, engines):
-        self.engines = engines
+        for p_engine in self.parsed_engine_ecus:
+            engine = self.engines[int(p_engine['engine_id'])]
+            ecu = self.parsed_ecus[int(p_engine['ecu_id'])]
 
-    def add_ecus(self, ecus):
-        self.ecus = ecus
+            if ecu not in engine['ecus']:
+                engine['ecus'].append(ecu)
 
-    def add_vehicle_engines(self, vehicle_engines):
-        self.vehicle_engines = vehicle_engines
+    def unify_vehicle_engines(self):
+        for vehicle in self.parsed_vehicles:
+            vehicle['engines'] = list()
+            self.vehicles.append(vehicle)
 
-    def add_engine_ecus(self, engine_ecus):
-        self.engine_ecus = engine_ecus
+        for p_vehicle_engine in self.parsed_vehicle_engines:
+            vehicle = self.vehicles[int(p_vehicle_engine['vehicle_id'])]
+            engine = self.engines[int(p_vehicle_engine['engine_id'])]
+
+            if engine not in vehicle['engines']:
+                vehicle['engines'].append(engine)
 
     def print_items(self, items):
         for item in items:
             print(item)
             print("\n")
 
-    def condense(self):
-        vehicles = list()
-
-        for ve in self.vehicle_engines:
-            vehicle = self.find_vehicle(ve['vehicle_id'], vehicles)
-
-            if vehicle is None:
-                v = {'v_idx': ve['vehicle_id'], 'e_idx': list()}
-                v['e_idx'].append(ve['engine_id'])
-                vehicles.append(v)
-            else:
-                vehicle['e_idx'].append(ve['engine_id'])
-
-        return vehicles
-
-    def find_vehicle(self, v_id, vehicles):
-        for vehicle in vehicles:
-            if vehicle['v_idx'] == v_id:
-                return vehicle
-        return None
-
-    def reformat(self, condensed_v):
-        vehicles = list()
-
-        for d in condensed_v:
-            vehicle = self.vehicles[int(d['v_idx'])]
-            vehicle['engines'] = list()
-
-            for e in d['e_idx']:
-                engine = self.engines[int(e)]
-
-                if engine not in vehicle['engines']:
-                    vehicle['engines'].append(engine)
-
-            if vehicle not in vehicles:
-                vehicles.append(vehicle)
-        
-        self.print_items(vehicles)
-        return vehicles
-
     def add_mongo(self):
-        vehicles = self.condense()
-        vehicles = self.reformat(vehicles)
-        # result = self.db.vehicles.insert_many(vehicles)
+        print('Adding to MongoDB:')
+        self.unify_engines_ecus()
+        self.unify_vehicle_engines()
+        self.print_items(self.vehicles)
+        
+        result = self.db.vehicles.insert_many(self.vehicles)
+        print(result)
 
