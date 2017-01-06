@@ -149,11 +149,12 @@ class bettermongo():
             self.engines.append(engine)
 
         for p_engine in self.parsed_engine_ecus:
-            engine = self.engines[int(p_engine['engine_id'])]
-            ecu = self.parsed_ecus[int(p_engine['ecu_id'])]
+            if p_engine['engine_id'] is not None and p_engine['ecu_id'] is not None:
+                engine = self.engines[int(p_engine['engine_id'])]
+                ecu = self.parsed_ecus[int(p_engine['ecu_id'])]
 
-            if ecu not in engine['ecus']:
-                engine['ecus'].append(ecu)
+                if ecu not in engine['ecus']:
+                    engine['ecus'].append(ecu)
 
     def unify_vehicle_engines(self):
         for vehicle in self.parsed_vehicles:
@@ -161,11 +162,12 @@ class bettermongo():
             self.vehicles.append(vehicle)
 
         for p_vehicle_engine in self.parsed_vehicle_engines:
-            vehicle = self.vehicles[int(p_vehicle_engine['vehicle_id'])]
-            engine = self.engines[int(p_vehicle_engine['engine_id'])]
+            if p_vehicle_engine['vehicle_id'] is not None and p_vehicle_engine['engine_id'] is not None:
+                vehicle = self.vehicles[int(p_vehicle_engine['vehicle_id'])]
+                engine = self.engines[int(p_vehicle_engine['engine_id'])]
 
-            if engine not in vehicle['engines']:
-                vehicle['engines'].append(engine)
+                if engine not in vehicle['engines']:
+                    vehicle['engines'].append(engine)
 
     def print_items(self, items):
         for item in items:
