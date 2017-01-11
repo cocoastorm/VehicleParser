@@ -2,6 +2,8 @@ import os
 import pymongo
 import configparser
 
+from bson.objectid import ObjectId
+
 # Convert Dictionaries to MySQL
 class MySqlConverter():
     def __init__(self):
@@ -154,6 +156,7 @@ class bettermongo():
                 ecu = self.parsed_ecus[int(p_engine['ecu_id'])]
 
                 if ecu not in engine['ecus']:
+                    ecu['_id'] = ObjectId()
                     engine['ecus'].append(ecu)
 
     def unify_vehicle_engines(self):
@@ -167,6 +170,7 @@ class bettermongo():
                 engine = self.engines[int(p_vehicle_engine['engine_id'])]
 
                 if engine not in vehicle['engines']:
+                    engine['_id'] = ObjectId()
                     vehicle['engines'].append(engine)
 
     def print_items(self, items):
@@ -182,4 +186,3 @@ class bettermongo():
         
         result = self.db.vehicles.insert_many(self.vehicles)
         print(result)
-
