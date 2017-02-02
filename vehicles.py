@@ -95,7 +95,6 @@ def generate_sql_relationship(tablename, filename, items):
     for idx, item in enumerate(items):
         sql = list()
         keys = ['`%s`' % k for k in item.keys()]
-        print(keys)
         values = ['%s' % str(v + 1) if v is not None else '' for v in item.values()]
         primary_index = str(idx + 1) + ', ' 
 
