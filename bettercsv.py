@@ -1,6 +1,8 @@
 import os
 import csv
 
+from collections import OrderedDict
+
 class Parser(object):
     def __init__(self, path):
         self.path = path
@@ -93,8 +95,8 @@ class Parser(object):
             engine = self.add_engine(engine, fuel)
             ecu = self.add_ecu(ecu, ecu_model, ecu_version)
             
-            ve = {'vehicle_id': vehicle, 'engine_id': engine}
-            ee = {'engine_id': engine, 'ecu_id': ecu}
+            ve = OrderedDict([('vehicle_id', vehicle), ('engine_id', engine)])
+            ee = OrderedDict([('engine_id', engine), ('ecu_id', ecu)])
             
             self.vehicle_engines.append(ve)
             self.engine_ecus.append(ee)

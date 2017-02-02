@@ -47,6 +47,7 @@ class MySqlConverter():
         generate_sql_relationship('VehicleEngine', 'VehicleEngine', self.vehicle_engines)
 
     def generate_sql_engine_ecu(self):
+        print(self.engine_ecus)
         generate_sql_relationship('EngineEcu', 'EngineEcu', self.engine_ecus)
 
 def generate_sql(tablename, filename, items):

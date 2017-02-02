@@ -141,3 +141,6 @@ while choice != 'quit':
         convert_data_mysql(csv_parser)
     elif choice == '3':
         add_data_mongodb(csv_parser)
+    elif choice == '4':
+        print(csv_parser.vehicle_engines)
+        print(csv_parser.engine_ecus)
