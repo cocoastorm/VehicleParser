@@ -96,10 +96,13 @@ class Parser(object):
             ecu = self.add_ecu(ecu, ecu_model, ecu_version)
             
             ve = OrderedDict([('vehicle_id', vehicle), ('engine_id', engine)])
-            ee = OrderedDict([('engine_id', engine), ('ecu_id', ecu)])
-            
             self.vehicle_engines.append(ve)
-            self.engine_ecus.append(ee)
+
+            # sometimes engines don't have the ecu
+            if(ecu):
+                ee = OrderedDict([('engine_id', engine), ('ecu_id', ecu)])
+                self.engine_ecus.append(ee)
+            
 
     def read(self, file):
         file_path = self.path + os.sep + file
