@@ -62,21 +62,38 @@ def generate_sql(tablename, filename, items):
         print("could not create file!")
         return False
     
+    # sql columns
+    sample_item = next(iter(items or []), None)
+    keys = ['`%s`' % k for k in sample_item.keys()]
+
+    header = list()
+    header.append("INSERT INTO `%s` (`id`, " % tablename)
+    header.append(", ".join(keys))
+    header.append(") VALUES")
+    file.write("".join(header))
+    file.write("\n")
+
     for idx, item in enumerate(items):
         sql = list()
-        keys = ['`%s`' % k for k in item.keys()]
+        last = len(items) - 1
         values = ['\'%s\'' % v for v in item.values()]
-        primary_index = str(idx + 1) + ', ' 
+        primary_index = str(idx + 1) + ', '
 
-        sql.append("INSERT INTO `%s` (`id`, " % tablename)
-        sql.append(", ".join(keys))
-        sql.append(") VALUES (")
+        sql.append("(")
         sql.append(primary_index)
         sql.append(", ".join(values))
-        sql.append(");")
+        
+        if idx == last:
+            sql.append(")")
+        else:
+            sql.append("),")
 
         file.write("".join(sql))
-        file.write("\n")
+
+        if not idx == last:
+            file.write("\n")
+        
+    file.write(";")
     file.close()
 
 def generate_sql_relationship(tablename, filename, items):
@@ -93,21 +110,37 @@ def generate_sql_relationship(tablename, filename, items):
         print("could not create file!")
         return False
 
+    # sql columns
+    sample_item = next(iter(items or []), None)
+    keys = ['`%s`' % k for k in sample_item.keys()]
+
+    header = list()
+    header.append("INSERT INTO `%s` (`id`, " % tablename)
+    header.append(", ".join(keys))
+    header.append(") VALUES")
+    file.write("".join(header))
+    file.write("\n")
+
     for idx, item in enumerate(items):
         sql = list()
-        keys = ['`%s`' % k for k in item.keys()]
-        values = ['%s' % str(v + 1) if v is not None else '' for v in item.values()]
+        last = len(items) - 1
+        values = ['\'%s\'' % v for v in item.values()]
         primary_index = str(idx + 1) + ', ' 
 
-        sql.append("INSERT INTO `%s` (`id`, " % tablename)
-        sql.append(", ".join(keys))
-        sql.append(") VALUES (")
+        sql.append("(")
         sql.append(primary_index)
         sql.append(", ".join(values))
-        sql.append(");")
+
+        if idx == last:
+            sql.append(")")
+        else:
+            sql.append("),")
 
         file.write("".join(sql))
-        file.write("\n")
+        
+        if not idx == last:
+            file.write("\n")
+    file.write(";")
     file.close()
 
 # Transfer Data to MongoDB
