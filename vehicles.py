@@ -124,7 +124,7 @@ def generate_sql_relationship(tablename, filename, items):
     for idx, item in enumerate(items):
         sql = list()
         last = len(items) - 1
-        values = ['\'%s\'' % v for v in item.values()]
+        values = ['\'%s\'' % str(v + 1) for v in item.values()]
         primary_index = str(idx + 1) + ', ' 
 
         sql.append("(")
